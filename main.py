@@ -41,6 +41,10 @@ def main():
 		
 		for obj in drawable_group:
 			obj.draw(screen)
+
+		for obj in asteroid_group:
+			if obj.collision_check(p):
+				print("GAME OVER!")
 		
 		pygame.display.flip()	
 
