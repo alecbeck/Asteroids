@@ -16,6 +16,7 @@ def main():
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	clock = pygame.time.Clock()
 	dt = 0
+	screen_score = 0
 	#create groups
 	updatable_group = pygame.sprite.Group()
 	drawable_group = pygame.sprite.Group()
@@ -31,6 +32,12 @@ def main():
 	p = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 	asteroid_field = AsteroidField()
 
+	pygame.font.init()
+	my_font = pygame.font.SysFont("Comic Sans MS", 30, False, False)
+
+	text_surface = my_font.render(f"SCORE: {screen_score}", False, (0,255,0))
+	
+
 	#game loop
 	while(True):
 		for event in pygame.event.get():
@@ -38,6 +45,7 @@ def main():
 				return
 
 		screen.fill((0,0,0))
+		screen.blit(text_surface, (10,10))
 
 		for obj in updatable_group:
 			obj.update(dt)
@@ -47,17 +55,20 @@ def main():
 
 		for obj in asteroid_group:
 			if obj.collision_check(p):
+				#TODO Add a game over screen and not just close the game
 				return
-				#print("GAME OVER!")
 
 		for obj in shoot_group:
 			for asteroid in asteroid_group:
 				if obj.collision_check(asteroid):
-					#print("Asteroid Hit!")
+					p.score += 1
 					obj.kill()
 					asteroid.split()
 
-		
+		if p.score != screen_score:
+			screen_score = p.score
+			text_surface = my_font.render(f"SCORE: {screen_score}", False, (0,255,0))
+
 		
 		pygame.display.flip()	
 
