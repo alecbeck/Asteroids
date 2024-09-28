@@ -47,7 +47,17 @@ def main():
 
 		for obj in asteroid_group:
 			if obj.collision_check(p):
-				print("GAME OVER!")
+				return
+				#print("GAME OVER!")
+
+		for obj in shoot_group:
+			for asteroid in asteroid_group:
+				if obj.collision_check(asteroid):
+					#print("Asteroid Hit!")
+					obj.kill()
+					asteroid.split()
+
+		
 		
 		pygame.display.flip()	
 
