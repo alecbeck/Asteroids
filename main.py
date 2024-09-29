@@ -4,8 +4,10 @@
 import pygame
 from constants import *
 from player import Player
+from powerup import Powerup
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from powerupfield import PowerupField
 from shot import Shot
 
 def main():
@@ -21,6 +23,7 @@ def main():
 	updatable_group = pygame.sprite.Group()
 	drawable_group = pygame.sprite.Group()
 	asteroid_group = pygame.sprite.Group()
+	powerup_group = pygame.sprite.Group()
 	shoot_group = pygame.sprite.Group()
 
 	#set the class containers
@@ -28,9 +31,13 @@ def main():
 	Asteroid.containers = (asteroid_group, updatable_group, drawable_group)
 	AsteroidField.containers = (updatable_group)
 	Shot.containers = (shoot_group, updatable_group, drawable_group)
+	PowerupField.containers = (updatable_group)
+	Powerup.containers = (powerup_group, updatable_group, drawable_group)
+
 
 	p = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 	asteroid_field = AsteroidField()
+	powerup_field = PowerupField()
 
 	pygame.font.init()
 	my_font = pygame.font.SysFont("Comic Sans MS", 30, False, False)
@@ -42,6 +49,7 @@ def main():
 	while(True):
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
+				#Quits game if the window x is clicked
 				return
 
 		screen.fill((0,0,0))
@@ -56,6 +64,7 @@ def main():
 		for obj in asteroid_group:
 			if obj.collision_check(p):
 				#TODO Add a game over screen and not just close the game
+				print(f"Your final Score: {screen_score}")
 				return
 
 		for obj in shoot_group:
@@ -64,6 +73,9 @@ def main():
 					p.score += 1
 					obj.kill()
 					asteroid.split()
+			for powerup in powerup_group:
+				if obj.collision_check(powerup):
+					powerup.destroy(p)
 
 		if p.score != screen_score:
 			screen_score = p.score
